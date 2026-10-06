@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-tema="roxo">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#050505">
+<link rel="manifest" href="../manifest.json">
+<link rel="icon" href="../icons/icon-192.png">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<link rel="stylesheet" href="../style.css">
+<title>Recuperar senha · Recordar</title>
+</head>
+<body class="entrada">
+  <header class="faixa">
+    <a class="voltar" href="../index.html" aria-label="Voltar"><i data-icone="voltar"></i></a>
+    <h1>Recuperar senha</h1>
+  </header>
+
+  <main class="caixa cartao">
+    <div class="abas centro">
+      <button type="button" data-tipo="paciente">Paciente</button>
+      <button type="button" data-tipo="medico">Médico</button>
+    </div>
+    <form id="form-recuperar">
+      <label class="campo"><span>E-mail</span>
+        <input name="email" type="email" autocomplete="username" required>
+      </label>
+      <label class="campo so-paciente"><span>Data de nascimento</span>
+        <input name="data_nascimento" type="date">
+      </label>
+      <label class="campo so-medico"><span>CRM</span>
+        <input name="crm" type="text">
+      </label>
+      <label class="campo"><span>Nova senha</span>
+        <input name="nova_senha" type="password" autocomplete="new-password" minlength="6" required>
+      </label>
+      <label class="campo"><span>Confirmar nova senha</span>
+        <input name="confirmar_senha" type="password" autocomplete="new-password" minlength="6" required>
+      </label>
+      <p class="erro-form" hidden></p>
+      <button type="submit" class="btn largo"><i data-icone="ok"></i> Criar nova senha</button>
+    </form>
+    <p class="rodape">
+      <button class="ouvir-texto" id="ouvir"><i data-icone="som"></i> Ouvir instruções</button>
+    </p>
+  </main>
+  <script src="../app.js"></script>
+  <script src="../auth.js"></script>
+</body>
+</html>
