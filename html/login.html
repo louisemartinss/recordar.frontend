@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-tema="roxo">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#050505">
+<link rel="manifest" href="../manifest.json">
+<link rel="icon" href="../icons/icon-192.png">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<link rel="stylesheet" href="../style.css">
+<title>Entrar · Recordar</title>
+</head>
+<body class="entrada">
+  <header class="faixa">
+    <a class="voltar" href="../index.html" aria-label="Voltar"><i data-icone="voltar"></i></a>
+    <h1 id="titulo">Entrar</h1>
+  </header>
+
+  <main class="caixa cartao">
+    <form id="form-login">
+      <label class="campo"><span>E-mail</span>
+        <input name="email" type="email" autocomplete="username" required>
+      </label>
+      <label class="campo"><span>Senha</span>
+        <input name="senha" type="password" autocomplete="current-password" required>
+      </label>
+      <p class="erro-form" hidden></p>
+      <button type="submit" class="btn largo"><i data-icone="ok"></i> Entrar</button>
+    </form>
+
+    <p class="rodape" id="area-esqueci">
+      <a class="link" id="esqueci" href="recuperar.html">Esqueci minha senha</a>
+    </p>
+    <p class="rodape" id="area-criar">
+      <a class="btn suave largo" id="criar"><i data-icone="mais"></i> Criar conta</a>
+    </p>
+    <p class="rodape" id="aviso-admin" hidden>O cadastro de administradores é feito somente pela gestão do sistema.</p>
+    <p class="rodape">
+      <button class="ouvir-texto" id="ouvir"><i data-icone="som"></i> Ouvir instruções</button>
+    </p>
+  </main>
+  <script src="../app.js"></script>
+  <script src="../auth.js"></script>
+</body>
+</html>
