@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-tema="azul">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="manifest" href="../manifest.json">
+<link rel="icon" href="../icons/icon-192.png">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<link rel="stylesheet" href="../style.css">
+<meta name="theme-color" content="#090909">
+<title>Recordar</title>
+</head>
+<body class="app">
+  <aside class="lateral">
+    <div class="logo-espaco"></div>
+    <nav>
+      <a href="#inicio" data-nav="inicio"><i data-icone="home"></i> Início</a>
+      <a href="#pacientes" data-nav="pacientes"><i data-icone="users"></i> Pacientes</a>
+      <a href="#perfil" data-nav="perfil"><i data-icone="user"></i> Perfil</a>
+    </nav>
+    <div class="quem"><span id="quem-nome"></span><small id="quem-tipo"></small></div>
+  </aside>
+
+  <main>
+    <header class="topo">
+      <a class="voltar" id="voltar" aria-label="Voltar" hidden><i data-icone="voltar"></i></a>
+      <h1 id="titulo"></h1>
+    </header>
+    <div class="conteudo">
+      <section class="view" id="view-inicio" hidden>
+        <form class="cartao" id="form-consulta" style="margin-bottom:1.5rem">
+          <h2>Criar consulta</h2>
+          <p class="dica" id="sem-clinica" hidden>Marque suas clínicas no Perfil para criar consultas.</p>
+          <div class="barra">
+            <label class="campo"><span>Clínica</span>
+              <select name="id_clinica" id="campo-clinica" required></select>
+            </label>
+            <label class="campo"><span>Dia da consulta</span>
+              <input name="data_consulta" type="date" required>
+            </label>
+            <label class="campo"><span>Horário da consulta</span>
+              <input name="horario_consulta" type="time" required>
+            </label>
+          </div>
+          <p class="erro-form" hidden></p>
+          <button type="submit" class="btn"><i data-icone="mais"></i> Criar consulta</button>
+        </form>
+        <div class="lista" id="lista-consultas"></div>
+      </section>
+
+      <section class="view" id="view-pacientes" hidden>
+        <div class="barra">
+          <label class="campo"><span>Buscar por nome</span>
+            <input id="busca-paciente" type="search">
+          </label>
+        </div>
+        <div class="lista" id="lista-pacientes"></div>
+      </section>
+
+      <section class="view colunas" id="view-consulta" hidden>
+        <div class="cartao" id="anamnese"></div>
+        <div class="pilha">
+          <form class="cartao" id="form-remedio">
+            <h2 id="titulo-remedio">Adicionar remédio</h2>
+            <label class="campo"><span>Nome do remédio</span>
+              <input name="nome_remedio" type="text" required>
+            </label>
+            <div class="grade-2">
+              <label class="campo"><span>Horário</span>
+                <input name="horario_remedio" type="time" required>
+              </label>
+              <label class="campo"><span>Quantidade</span>
+                <input name="quantidade_remedio" type="text" placeholder="Ex.: 1 comprimido" required>
+              </label>
+            </div>
+            <p class="erro-form" hidden></p>
+            <div class="item"><div class="acoes">
+              <button type="submit" class="btn" id="botao-remedio">Adicionar</button>
+              <button type="button" class="btn suave" id="cancelar-edicao" hidden>Cancelar</button>
+            </div></div>
+          </form>
+          <div class="pilha" id="lista-remedios"></div>
+        </div>
+      </section>
+
+      <section class="view" id="view-perfil" hidden></section>
+    </div>
+  </main>
+  <button class="ouvir" id="ouvir" aria-label="Ouvir instruções"><i data-icone="som"></i></button>
+  <script src="../app.js"></script>
+  <script src="../js/medico.js"></script>
+</body>
+</html>
