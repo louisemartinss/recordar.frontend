@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-tema="roxo">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="manifest" href="../manifest.json">
+<link rel="icon" href="../icons/icon-192.png">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<link rel="stylesheet" href="../style.css">
+<meta name="theme-color" content="#050505">
+<title>Recordar</title>
+</head>
+<body class="app">
+  <aside class="lateral">
+    <div class="logo-espaco"></div>
+    <nav>
+      <a href="#inicio" data-nav="inicio"><i data-icone="home"></i> Início</a>
+      <a href="#remedios" data-nav="remedios"><i data-icone="remedio"></i> Remédios</a>
+      <a href="#perfil" data-nav="perfil"><i data-icone="user"></i> Perfil</a>
+    </nav>
+    <div class="quem"><span id="quem-nome"></span><small id="quem-tipo"></small></div>
+  </aside>
+
+  <main>
+    <header class="topo">
+      <a class="voltar" id="voltar" aria-label="Voltar" hidden><i data-icone="voltar"></i></a>
+      <h1 id="titulo"></h1>
+    </header>
+    <div class="conteudo">
+      <section class="view colunas" id="view-inicio" hidden>
+        <div class="pilha">
+          <a class="btn largo" href="#marcar"><i data-icone="calendario"></i> Marcar consulta</a>
+          <a class="btn suave largo" href="#consultas"><i data-icone="relogio"></i> Próximas consultas</a>
+          <div class="cartao" id="resumo-consulta"></div>
+        </div>
+        <div class="cartao agenda">
+          <h2>Agenda do dia</h2>
+          <div class="agenda-lista" id="agenda"></div>
+        </div>
+      </section>
+
+      <section class="view" id="view-marcar" hidden>
+        <form class="cartao" id="filtro-medicos" style="margin-bottom:1.5rem">
+          <h2>Encontre um profissional</h2>
+          <div class="barra" style="margin-bottom:0">
+            <label class="campo"><span>Clínica</span>
+              <select name="clinica" id="filtro-clinica"></select>
+            </label>
+            <label class="campo"><span>Especialidade</span>
+              <select name="especialidade" id="filtro-especialidade"></select>
+            </label>
+            <label class="campo"><span>Nome do profissional</span>
+              <input name="nome" id="filtro-nome" type="search" placeholder="Digite um nome">
+            </label>
+          </div>
+        </form>
+        <div class="lista" id="lista-medicos"></div>
+      </section>
+
+      <section class="view" id="view-horarios" hidden>
+        <div class="cartao" id="medico-escolhido" style="margin-bottom:1.2rem"></div>
+        <div class="lista" id="lista-disponiveis"></div>
+      </section>
+
+      <section class="view" id="view-anamnese" hidden>
+        <div class="cartao" id="consulta-escolhida" style="margin-bottom:1.2rem"></div>
+        <form class="cartao" id="form-anamnese">
+          <div class="grade-2">
+            <label class="campo"><span>Qual é a sua principal queixa?</span>
+              <textarea name="queixa_principal" required></textarea>
+            </label>
+            <label class="campo"><span>Quais sintomas você está sentindo?</span>
+              <textarea name="sintomas"></textarea>
+            </label>
+            <label class="campo"><span>Quando os sintomas começaram?</span>
+              <input name="inicio_sintomas" type="date">
+            </label>
+            <label class="campo"><span>Possui doenças ou condições de saúde?</span>
+              <textarea name="condicoes_saude"></textarea>
+            </label>
+            <label class="campo"><span>Possui alguma alergia?</span>
+              <textarea name="alergias"></textarea>
+            </label>
+            <label class="campo"><span>Já utiliza algum medicamento?</span>
+              <textarea name="medicamentos_em_uso"></textarea>
+            </label>
+          </div>
+          <p class="erro-form" hidden></p>
+          <button type="submit" class="btn largo"><i data-icone="ok"></i> Concluir</button>
+        </form>
+      </section>
+
+      <section class="view" id="view-consultas" hidden>
+        <div class="lista" id="lista-consultas"></div>
+      </section>
+
+      <section class="view" id="view-remedios" hidden>
+        <div class="lista" id="lista-remedios"></div>
+      </section>
+
+      <section class="view" id="view-perfil" hidden></section>
+    </div>
+  </main>
+  <button class="ouvir" id="ouvir" aria-label="Ouvir instruções"><i data-icone="som"></i></button>
+  <script src="../app.js"></script>
+  <script src="../js/paciente.js"></script>
+</body>
+</html>
