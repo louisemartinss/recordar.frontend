@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-tema="roxo">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#050505">
+<link rel="manifest" href="../manifest.json">
+<link rel="icon" href="../icons/icon-192.png">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<link rel="stylesheet" href="../style.css">
+<title>Criar conta · Recordar</title>
+</head>
+<body class="entrada">
+  <header class="faixa">
+    <a class="voltar" id="voltar" href="login.html" aria-label="Voltar"><i data-icone="voltar"></i></a>
+    <h1 id="titulo">Criar conta</h1>
+  </header>
+
+  <main class="caixa larga cartao">
+    <form id="form-cadastro">
+      <div class="grade-2">
+        <label class="campo"><span>Nome completo</span>
+          <input id="campo-nome" type="text" autocomplete="name" required>
+        </label>
+
+        <label class="campo so-paciente"><span>Data de nascimento</span>
+          <input name="data_nascimento" type="date">
+        </label>
+        <label class="campo so-medico"><span>CRM</span>
+          <input name="crm" type="text">
+        </label>
+        <label class="campo so-medico"><span>Especialidade</span>
+          <select name="id_especialidade" id="campo-especialidade"><option value="">Carregando...</option></select>
+        </label>
+
+        <label class="campo"><span>Telefone</span>
+          <input name="telefone" type="tel" autocomplete="tel">
+        </label>
+        <label class="campo"><span>E-mail</span>
+          <input name="email" type="email" autocomplete="email" required>
+        </label>
+        <label class="campo"><span>Senha (6 ou mais letras ou números)</span>
+          <input name="senha" type="password" autocomplete="new-password" minlength="6" required>
+        </label>
+        <label class="campo"><span>Confirmar senha</span>
+          <input name="confirmar_senha" type="password" autocomplete="new-password" minlength="6" required>
+        </label>
+      </div>
+      <div class="so-medico" id="campo-clinicas"></div>
+      <p class="erro-form" hidden></p>
+      <button type="submit" class="btn largo"><i data-icone="ok"></i> Criar conta</button>
+    </form>
+    <p class="rodape">
+      <button class="ouvir-texto" id="ouvir"><i data-icone="som"></i> Ouvir instruções</button>
+    </p>
+  </main>
+  <script src="../app.js"></script>
+  <script src="../auth.js"></script>
+</body>
+</html>
