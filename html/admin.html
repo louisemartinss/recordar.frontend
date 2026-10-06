@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-tema="laranja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="manifest" href="../manifest.json">
+<link rel="icon" href="../icons/icon-192.png">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<link rel="stylesheet" href="../style.css">
+<meta name="theme-color" content="#2b3153">
+<title>Recordar</title>
+</head>
+<body class="app">
+  <aside class="lateral">
+    <div class="logo-espaco"></div>
+    <nav>
+      <a href="#inicio" data-nav="inicio"><i data-icone="home"></i> Início</a>
+      <a href="#usuarios" data-nav="usuarios"><i data-icone="users"></i> Usuários</a>
+      <a href="#clinicas" data-nav="clinicas"><i data-icone="clinica"></i> Clínicas</a>
+      <a href="#especialidades" data-nav="especialidades"><i data-icone="especialidade"></i> Especialidades</a>
+      <a href="#consultas" data-nav="consultas"><i data-icone="calendario"></i> Consultas</a>
+    </nav>
+    <div class="quem"><span id="quem-nome"></span><small id="quem-tipo"></small></div>
+  </aside>
+
+  <main>
+    <header class="topo">
+      <a class="voltar" id="voltar" aria-label="Voltar" hidden><i data-icone="voltar"></i></a>
+      <h1 id="titulo"></h1>
+    </header>
+    <div class="conteudo">
+      <section class="view" id="view-inicio" hidden>
+        <div class="painel">
+          <a class="cartao" href="#usuarios"><i data-icone="users"></i><strong id="total-usuarios">—</strong><span>USUÁRIOS</span></a>
+          <a class="cartao" href="#clinicas"><i data-icone="clinica"></i><strong id="total-clinicas">—</strong><span>CLÍNICAS</span></a>
+          <a class="cartao" href="#especialidades"><i data-icone="especialidade"></i><strong id="total-especialidades">—</strong><span>ESPECIALIDADES</span></a>
+          <a class="cartao" href="#consultas"><i data-icone="calendario"></i><strong id="total-consultas">—</strong><span>CONSULTAS</span></a>
+        </div>
+        <button class="btn perigo" id="sair"><i data-icone="sair"></i> Sair da área administrativa</button>
+      </section>
+
+      <section class="view" id="view-usuarios" hidden>
+        <div class="barra">
+          <label class="campo"><span>Buscar usuário</span>
+            <input id="busca-usuario" type="search">
+          </label>
+        </div>
+        <div class="barra abas">
+          <button data-aba="paciente" class="ativa">Pacientes</button>
+          <button data-aba="medico">Médicos</button>
+        </div>
+        <div class="lista" id="lista-usuarios"></div>
+      </section>
+
+      <section class="view" id="view-clinicas" hidden>
+        <form class="cartao" id="form-clinica" style="margin-bottom:1.5rem">
+          <h2 id="titulo-clinica">Cadastrar clínica</h2>
+          <div class="grade-2">
+            <label class="campo"><span>Nome da clínica</span>
+              <input name="nome_clinica" type="text" required>
+            </label>
+            <label class="campo"><span>Telefone</span>
+              <input name="telefone_clinica" type="tel">
+            </label>
+          </div>
+          <label class="campo"><span>Endereço</span>
+            <input name="endereco_clinica" type="text">
+          </label>
+          <p class="erro-form" hidden></p>
+          <div class="item"><div class="acoes">
+            <button type="submit" class="btn" id="botao-clinica">Cadastrar</button>
+            <button type="button" class="btn suave" id="cancelar-clinica" hidden>Cancelar</button>
+          </div></div>
+        </form>
+        <div class="barra">
+          <label class="campo"><span>Pesquisar clínica (nome ou endereço)</span>
+            <input id="busca-clinica" type="search">
+          </label>
+        </div>
+        <div class="lista" id="lista-clinicas"></div>
+      </section>
+
+      <section class="view" id="view-especialidades" hidden>
+        <form class="cartao" id="form-especialidade" style="margin-bottom:1.5rem">
+          <h2 id="titulo-especialidade">Cadastrar especialidade</h2>
+          <label class="campo"><span>Nome da especialidade</span>
+            <input name="nome_especialidade" type="text" placeholder="Ex.: Cardiologia" required>
+          </label>
+          <p class="erro-form" hidden></p>
+          <div class="item"><div class="acoes">
+            <button type="submit" class="btn" id="botao-especialidade">Cadastrar</button>
+            <button type="button" class="btn suave" id="cancelar-especialidade" hidden>Cancelar</button>
+          </div></div>
+        </form>
+        <div class="lista" id="lista-especialidades"></div>
+      </section>
+
+      <section class="view" id="view-consultas" hidden>
+        <div class="lista" id="lista-consultas"></div>
+      </section>
+    </div>
+  </main>
+  <button class="ouvir" id="ouvir" aria-label="Ouvir instruções"><i data-icone="som"></i></button>
+  <script src="../app.js"></script>
+  <script src="../js/admin.js"></script>
+</body>
+</html>
