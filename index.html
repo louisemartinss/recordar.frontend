@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-tema="roxo">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#050505">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="stylesheet" href="style.css">
+<title>Recordar</title>
+</head>
+<body class="entrada">
+  <main class="caixa larga">
+    <h2>QUEM ESTÁ USANDO?</h2>
+    <div class="escolhas">
+      <a class="escolha paciente" href="html/login.html?tipo=paciente">
+        <i data-icone="user"></i>
+        PACIENTE
+      </a>
+      <a class="escolha medico" href="html/login.html?tipo=medico">
+        <i data-icone="medico"></i>
+        MÉDICO
+      </a>
+    </div>
+    <p class="rodape">
+      <a class="btn suave" href="html/recuperar.html"><i data-icone="chave"></i> Recuperar senha</a>
+    </p>
+    <p class="rodape">
+      <a class="link" href="html/login.html?tipo=administrador">Acesso administrativo</a>
+    </p>
+    <p class="rodape">
+      <button class="ouvir-texto" id="ouvir"><i data-icone="som"></i> Ouvir instruções</button>
+    </p>
+  </main>
+  <script src="app.js"></script>
+  <script>
+    if (sessao.token && sessao.user && PAGINA_DA_AREA[sessao.user.tipo]) {
+      location.replace(PAGINA_DA_AREA[sessao.user.tipo]);
+    }
+    desenharIcones();
+    $("#ouvir").addEventListener("click", () =>
+      falar("Escolha quem está usando. Aperte Paciente para cuidar da sua saúde, ou Médico para atender seus pacientes. Se esqueceu a senha, aperte Recuperar senha."));
+  </script>
+</body>
+</html>
