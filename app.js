@@ -1,4 +1,4 @@
-const API_URL = ["localhost", "127.0.0.1"].includes(location.hostname) ? "http://localhost:3001/api" : "https://https://recordar-api.onrender.com/api";
+const API_URL = ["localhost", "127.0.0.1"].includes(location.hostname) ? "http://localhost:3001/api" : "https://recordar-api.onrender.com/api";
 
 function lerPreferencia(chave) {
   try { return localStorage.getItem(chave) === "sim"; } catch { return false; }
