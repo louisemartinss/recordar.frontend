@@ -1,8 +1,3 @@
-const tipoPedido = new URLSearchParams(location.search).get("tipo");
-const tipo = PAGINA_DA_AREA[tipoPedido] ? tipoPedido : "paciente";
-const NOME_DA_AREA = { paciente: "Paciente", medico: "Médico", administrador: "Administrador" };
-
-document.documentElement.dataset.tema = TEMA_DA_AREA[tipo];
 desenharIcones();
 
 function entrar(resposta) {
@@ -12,63 +7,57 @@ function entrar(resposta) {
 
 const formLogin = $("#form-login");
 if (formLogin) {
-  $("#titulo").textContent = `Entrar · ${NOME_DA_AREA[tipo]}`;
-  if (tipo === "administrador") {
-    $("#area-criar").hidden = true;
-    $("#area-esqueci").hidden = true;
-    $("#aviso-admin").hidden = false;
-  } else {
-    $("#criar").href = `cadastro.html?tipo=${tipo}`;
-    $("#esqueci").href = `recuperar.html?tipo=${tipo}`;
+  if (sessao.token && sessao.user && PAGINA_DA_AREA[sessao.user.tipo]) {
+    location.replace(PAGINA_DA_AREA[sessao.user.tipo]);
   }
 
+  const parametros = new URLSearchParams(location.search);
+  const pedido = parametros.get("tipo");
+  if (parametros.get("conta") === "criada") toast("Conta criada! Agora entre com seu e-mail e senha.");
+  let tipoLogin = PAGINA_DA_AREA[pedido] ? pedido : "paciente";
+
+  function mostrarAba() {
+    document.documentElement.dataset.tema = TEMA_DA_AREA[tipoLogin];
+    document.querySelectorAll("[data-tipo]").forEach((b) => { b.hidden = b.dataset.tipo === tipoLogin; });
+    document.querySelectorAll("[data-so]").forEach((el) => { el.hidden = !el.dataset.so.split(" ").includes(tipoLogin); });
+    $("#esqueci").href = `recuperar.html?tipo=${tipoLogin}`;
+    const erro = $(".erro-form", formLogin);
+    if (erro) erro.hidden = true;
+  }
+  document.querySelectorAll("[data-tipo]").forEach((b) => {
+    b.addEventListener("click", () => { tipoLogin = b.dataset.tipo; mostrarAba(); });
+  });
+  mostrarAba();
+
   aoEnviar(formLogin, async ({ email, senha }) => {
-    entrar(await api("/auth/login", { method: "POST", body: { email, senha, tipo } }));
+    entrar(await api("/auth/login", { method: "POST", body: { email, senha, tipo: tipoLogin } }));
   });
 
   $("#ouvir").addEventListener("click", () =>
-    falar("Digite seu e-mail e sua senha e aperte Entrar. Se ainda não tem conta, aperte Criar conta."));
+    falar("Digite seu e-mail e sua senha e aperte Entrar. Se ainda não tem conta, aperte Criar conta. Médicos e administradores usam os botões no fim da tela."));
 }
 
 const formCadastro = $("#form-cadastro");
 if (formCadastro) {
-  if (tipo === "administrador") location.replace("login.html?tipo=administrador");
-  $("#voltar").href = `login.html?tipo=${tipo}`;
-  $("#titulo").textContent = `Criar conta · ${NOME_DA_AREA[tipo]}`;
-
-  const outro = tipo === "paciente" ? "medico" : "paciente";
-  document.querySelectorAll(`.so-${outro}`).forEach((el) => el.remove());
-  document.querySelectorAll(`.so-${tipo} input, .so-${tipo} select`).forEach((el) => { el.required = true; });
-
-  if (tipo === "medico") {
-    Promise.all([api("/especialidades"), api("/clinicas")]).then(([especialidades, clinicas]) => {
-      $("#campo-especialidade").innerHTML = opcoesHTML(especialidades.map(comoOpcaoEspecialidade), "",
-        especialidades.length ? "Escolha..." : "Nenhuma especialidade cadastrada");
-      $("#campo-clinicas").innerHTML = caixasHTML("clinicas", "Clínicas onde você atende",
-        clinicas.map(comoOpcaoClinica), [], "Nenhuma clínica cadastrada.");
-      if (!especialidades.length) toast("Peça ao administrador para cadastrar as especialidades antes de criar a conta.", "erro");
-    }).catch((falha) => toast(falha.message, "erro"));
-  }
-  $("#campo-nome").name = tipo === "paciente" ? "nome_paciente" : "nome_medico";
-  const nascimento = $("input[name=data_nascimento]");
-  if (nascimento) nascimento.max = hojeISO();
+  formCadastro.data_nascimento.max = hojeISO();
 
   aoEnviar(formCadastro, async (valores) => {
     if (valores.senha !== valores.confirmar_senha) throw new Error("As senhas não são iguais.");
-    entrar(await api("/auth/register", { method: "POST", body: { ...valores, tipo } }));
+    await api("/auth/register", { method: "POST", body: { ...valores, tipo: "paciente" } });
+    location.href = "login.html?tipo=paciente&conta=criada";
   });
 
   $("#ouvir").addEventListener("click", () =>
-    falar((tipo === "medico" ? "Escolha a sua especialidade e marque as clínicas onde você atende. " : "") + "Preencha seus dados, escolha uma senha com pelo menos seis letras ou números e aperte Criar conta."));
+    falar("Preencha seus dados, escolha uma senha com pelo menos seis letras ou números e aperte Criar conta. Depois entre com o seu e-mail e a sua senha."));
 }
 
 const formRecuperar = $("#form-recuperar");
 if (formRecuperar) {
-  let tipoRecuperar = tipo === "medico" ? "medico" : "paciente";
+  const tipoRecuperar = new URLSearchParams(location.search).get("tipo") === "medico" ? "medico" : "paciente";
 
   function mostrarTipo() {
     document.documentElement.dataset.tema = TEMA_DA_AREA[tipoRecuperar];
-    document.querySelectorAll("[data-tipo]").forEach((b) => b.classList.toggle("ativa", b.dataset.tipo === tipoRecuperar));
+    $(".voltar").href = `login.html?tipo=${tipoRecuperar}`;
     for (const t of ["paciente", "medico"]) {
       document.querySelectorAll(`.so-${t}`).forEach((el) => {
         el.hidden = t !== tipoRecuperar;
@@ -76,9 +65,6 @@ if (formRecuperar) {
       });
     }
   }
-  document.querySelectorAll("[data-tipo]").forEach((b) => {
-    b.addEventListener("click", () => { tipoRecuperar = b.dataset.tipo; mostrarTipo(); });
-  });
   formRecuperar.data_nascimento.max = hojeISO();
   mostrarTipo();
 
@@ -93,5 +79,7 @@ if (formRecuperar) {
   });
 
   $("#ouvir").addEventListener("click", () =>
-    falar("Escolha Paciente ou Médico. Digite seu e-mail. Se você é paciente, informe sua data de nascimento. Se é médico, informe o seu C R M. Depois escolha uma senha nova e aperte Criar nova senha."));
+    falar(tipoRecuperar === "medico"
+      ? "Digite seu e-mail e o seu C R M. Depois escolha uma senha nova e aperte Salvar senha."
+      : "Digite seu e-mail e a sua data de nascimento. Depois escolha uma senha nova e aperte Salvar senha."));
 }

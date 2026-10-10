@@ -1,4 +1,4 @@
-const CACHE_NAME = "recordar-v11";
+const CACHE_NAME = "recordar-v23";
 const ARQUIVOS = [
   "./",
   "index.html",
@@ -15,6 +15,7 @@ const ARQUIVOS = [
   "js/medico.js",
   "js/admin.js",
   "manifest.json",
+  "icons/logo.png",
   "icons/icon-192.png",
   "icons/icon-512.png",
   "icons/icon-maskable-512.png",

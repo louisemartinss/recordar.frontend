@@ -72,9 +72,59 @@
 
 .texto-maior { font-size: 23px; }
 
-.modo-claro { --fundo: #f3f2f8; --cartao: #ffffff; --texto: #15131c; --texto-suave: #403c55; }
-.modo-claro[data-tema="roxo"] { --borda: #a89bf2; --campo: #eceaf5; --campo-borda: #8d82d6; --rotulo: #3d3391; --suave: #e4dffc; --forte: #3d3391; }
-.modo-claro[data-tema="azul"] { --borda: #7bc3e9; --campo: #e6f2f9; --campo-borda: #5aa7d1; --rotulo: #14506e; --suave: #d8ecf7; --forte: #14506e; }
+/* MODO CLARO: só vale quando a pessoa liga "Modo claro" no Perfil */
+.modo-claro[data-tema="roxo"] {
+  --fundo: #f5f3fc;
+  --cartao: #ffffff;
+  --borda: #cbc3ef;
+  --lateral: #ffffff;
+  --texto: #1c1730;
+  --texto-suave: #4b4466;
+  --campo: #ffffff;
+  --campo-borda: #8b80cf;
+  --rotulo: #3d3391;
+  --botao: #4f3fb8;
+  --botao-texto: #ffffff;
+  --suave: #ebe7fb;
+  --forte: #3d3391;
+  --topo: linear-gradient(100deg, #e4defc 0%, #d6cdfa 55%, #c2b6f4 100%);
+  --topo-texto: #1c1730;
+  --destaque: #ece8fd;
+  --destaque-texto: #1c1730;
+}
+.modo-claro[data-tema="azul"] {
+  --fundo: #f1f7fb;
+  --cartao: #ffffff;
+  --borda: #b9d9ea;
+  --lateral: #ffffff;
+  --texto: #0e2230;
+  --texto-suave: #3a5365;
+  --campo: #ffffff;
+  --campo-borda: #5e9bbd;
+  --rotulo: #14506e;
+  --botao: #17668f;
+  --botao-texto: #ffffff;
+  --suave: #e2f1f9;
+  --forte: #14506e;
+  --topo: linear-gradient(100deg, #dceffa 0%, #c8e6f6 55%, #a9d6ef 100%);
+  --topo-texto: #0e2230;
+  --destaque: #e2f1f9;
+  --destaque-texto: #0e2230;
+}
+.modo-claro:not([data-tema="laranja"]) .lateral { color: var(--texto); }
+.modo-claro:not([data-tema="laranja"]) .lateral nav a { color: var(--texto); }
+.modo-claro:not([data-tema="laranja"]) .lateral nav a:hover { background: var(--suave); }
+.modo-claro:not([data-tema="laranja"]) .lateral nav a.ativa { background: var(--botao); color: var(--botao-texto); }
+.modo-claro:not([data-tema="laranja"]) .quem { background: var(--suave); color: var(--forte); }
+.modo-claro:not([data-tema="laranja"]) .voltar { background: rgba(0, 0, 0, 0.08); }
+.modo-claro:not([data-tema="laranja"]) .selo.livre { background: #d6f1de; color: #14532d; }
+.modo-claro:not([data-tema="laranja"]) .selo.encerrado { background: #e7e7ea; color: #3b3b45; }
+.modo-claro:not([data-tema="laranja"]) .agenda { border: 2px solid var(--borda); }
+.modo-claro:not([data-tema="laranja"]) .agenda-item { background: #ffffff; border: 2px solid var(--borda); }
+.modo-claro:not([data-tema="laranja"]) .agenda-item.tomado { background: var(--suave); }
+.modo-claro:not([data-tema="laranja"]) .ouvir { border-color: var(--cartao); box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25); }
+.modo-claro:not([data-tema="laranja"]) #toast { border-color: transparent; box-shadow: 0 2px 12px rgba(0, 0, 0, 0.25); }
+.modo-claro:not([data-tema="laranja"]) dialog::backdrop { background: rgba(20, 18, 40, 0.55); }
 
 * { box-sizing: border-box; }
 html, body { margin: 0; }
@@ -105,6 +155,7 @@ svg.icone { width: 1.25em; height: 1.25em; flex: none; stroke: currentColor; fil
 .btn[disabled] { opacity: 0.6; cursor: wait; }
 .btn.suave { background: var(--suave); color: var(--forte); }
 .btn.perigo { background: var(--perigo); color: #fff; }
+.btn.verde { background: var(--ok); color: #fff; }
 .btn.aviso { background: var(--aviso); color: #fff; }
 .btn.largo { width: 100%; max-width: 24rem; }
 .btn.pequeno { min-height: 56px; padding: 0.4rem 1.3rem; font-size: 1rem; }
@@ -119,7 +170,14 @@ svg.icone { width: 1.25em; height: 1.25em; flex: none; stroke: currentColor; fil
 }
 .campo textarea { min-height: 110px; resize: vertical; }
 .campo input:focus, .campo textarea:focus, .campo select:focus { border-color: var(--texto); outline: none; }
-.campo select { cursor: pointer; }
+.campo select {
+  cursor: pointer; appearance: none; -webkit-appearance: none; padding-right: 3.2rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 1rem center; background-size: 1.4rem;
+}
+[data-tema="laranja"] .campo select, .modo-claro .campo select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232b3153' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+}
 .campo ::placeholder { color: var(--texto-suave); opacity: 0.8; }
 .modo-claro .campo input, .modo-claro .campo select { color-scheme: light; }
 .campo input, .campo select { color-scheme: dark; }
@@ -132,7 +190,20 @@ svg.icone { width: 1.25em; height: 1.25em; flex: none; stroke: currentColor; fil
 .opcoes .caixas { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 0.6rem; }
 .opcoes label { display: flex; align-items: center; gap: 0.7rem; min-height: 62px; padding: 0.5rem 1rem; border-radius: 14px; border: 2px solid var(--campo-borda); background: var(--campo); cursor: pointer; overflow-wrap: anywhere; }
 .opcoes input { width: 28px; height: 28px; flex: none; accent-color: var(--botao); }
+.opcoes .caixas.horas { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+.opcoes .caixas.horas label { white-space: nowrap; overflow-wrap: normal; font-variant-numeric: tabular-nums; }
 .etiquetas { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.seletor .escolhidas { gap: 0.6rem; margin-bottom: 0.8rem; }
+.seletor .escolhida {
+  display: inline-flex; align-items: center; gap: 0.5rem; min-height: 52px; padding: 0.3rem 0.4rem 0.3rem 1rem;
+  border-radius: 14px; border: 2px solid var(--campo-borda); background: var(--suave); color: var(--forte); font-weight: 700;
+}
+.seletor .escolhida button {
+  width: 40px; height: 40px; flex: none; display: grid; place-items: center; border: 0; border-radius: 10px;
+  background: rgba(0, 0, 0, 0.18); color: inherit; cursor: pointer;
+}
+.seletor .escolhida button:hover { background: var(--perigo); color: #fff; }
+.seletor .campo { margin-bottom: 0; }
 
 .cartao { background: var(--cartao); border: 2px solid var(--borda); border-radius: var(--raio); padding: 1.4rem 1.5rem; }
 .cartao h2 { font-size: 1.35rem; margin-bottom: 1rem; }
@@ -145,6 +216,7 @@ svg.icone { width: 1.25em; height: 1.25em; flex: none; stroke: currentColor; fil
 .vazio { color: var(--texto); font-size: 1.15rem; font-weight: 700; padding: 1rem 0; grid-column: 1 / -1; }
 .selo { align-self: flex-start; padding: 0.2rem 0.8rem; border-radius: 10px; font-size: 0.95rem; font-weight: 700; background: var(--suave); color: var(--forte); }
 .selo.livre { background: #1f5230; color: #d5f5dc; }
+.selo.encerrado { background: #3a3a40; color: #e6e6ea; }
 .colunas { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; align-items: start; }
 .pilha { display: flex; flex-direction: column; gap: 1rem; }
 .barra { display: flex; flex-wrap: wrap; gap: 0.8rem; align-items: center; margin-bottom: 1.3rem; }
@@ -180,6 +252,16 @@ svg.icone { width: 1.25em; height: 1.25em; flex: none; stroke: currentColor; fil
 .agenda-item.tomado { background: rgba(255, 255, 255, 0.3); }
 .agenda-item.tomado .marcar { background: var(--destaque-texto); color: #fff; }
 .agenda-item.tomado .nome { text-decoration: line-through; }
+.agenda-dia { display: flex; align-items: center; gap: 0.5rem; font-weight: 600; margin: -0.4rem 0 1rem; }
+.agenda-dia.teste { background: var(--destaque-texto); color: var(--destaque); padding: 0.6rem 0.9rem; border-radius: 12px; }
+.agenda-vazia { font-weight: 700; font-size: 1.1rem; padding: 0.6rem 0; }
+.agenda-teste { margin-top: 1.2rem; }
+.agenda-link { display: inline-flex; align-items: center; gap: 0.5rem; min-height: 48px; padding: 0; background: none; border: 0; font: inherit; font-weight: 700; color: inherit; text-decoration: underline; cursor: pointer; }
+.agenda-escolha { display: flex; flex-wrap: wrap; gap: 0.8rem; align-items: flex-end; }
+.agenda-escolha .campo { margin: 0; flex: 1; min-width: 200px; }
+.agenda .campo > span { color: var(--destaque-texto); }
+.agenda .btn { background: var(--destaque-texto); color: var(--destaque); }
+.agenda-link:focus-visible, .agenda .btn:focus-visible { outline-color: var(--destaque-texto); }
 
 .chave { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 0.7rem 0; cursor: pointer; font-weight: 700; font-size: 1.1rem; }
 .chave input { appearance: none; flex: none; width: 76px; height: 42px; border-radius: 999px; background: #7d7a8c; position: relative; cursor: pointer; transition: background 0.15s; }
@@ -194,6 +276,10 @@ svg.icone { width: 1.25em; height: 1.25em; flex: none; stroke: currentColor; fil
   border-radius: 0 0 40px 40px; position: relative;
 }
 .faixa h1 { font-size: 2.2rem; }
+.entrada .faixa.com-marca { padding-top: 1.4rem; min-height: 210px; }
+.marca { display: flex; flex-direction: column; align-items: center; gap: 0.35rem; }
+.marca img { width: 84px; height: 84px; filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.25)); }
+.marca-nome { font-family: "Fredoka", "Trebuchet MS", "Segoe UI", sans-serif; font-weight: 600; font-size: 1.35rem; letter-spacing: 0.04em; line-height: 1; }
 .faixa .voltar { position: absolute; left: 1.5rem; top: 1.5rem; }
 .voltar { display: inline-flex; align-items: center; justify-content: center; width: 60px; height: 60px; flex: none; border-radius: 14px; background: rgba(0, 0, 0, 0.2); color: var(--topo-texto); text-decoration: none; }
 .voltar .icone { width: 1.8rem; height: 1.8rem; stroke-width: 3; }
@@ -204,6 +290,7 @@ svg.icone { width: 1.25em; height: 1.25em; flex: none; stroke: currentColor; fil
 .entrada .rodape { text-align: center; margin-top: 1.2rem; color: var(--texto-suave); display: flex; justify-content: center; }
 .entrada form .btn.largo { display: flex; margin-inline: auto; }
 .abas.centro { justify-content: center; margin-bottom: 1.3rem; }
+.entrada .rodape.outros-acessos { flex-wrap: wrap; gap: 0.7rem; margin-top: 1.6rem; }
 
 .escolhas { display: flex; flex-direction: column; align-items: center; gap: 1.4rem; margin-bottom: 1.8rem; }
 .escolha {
@@ -287,6 +374,8 @@ dialog .acoes { display: flex; gap: 0.8rem; justify-content: flex-end; margin-to
   .topo h1 { font-size: 1.6rem; }
   .entrada .faixa { padding: 1.6rem 1rem 4.2rem 5.2rem; text-align: left; min-height: 160px; }
   .entrada .faixa h1 { font-size: 1.7rem; }
+  .entrada .faixa.com-marca { padding: 1.1rem 1rem 4.2rem; text-align: center; min-height: 190px; }
+  .marca img { width: 72px; height: 72px; }
   .faixa .voltar { left: 1rem; top: 1.2rem; }
   .cartao { padding: 1.1rem; }
   .btn { padding-inline: 1.2rem; }

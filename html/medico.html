@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="manifest" href="../manifest.json">
-<link rel="icon" href="../icons/icon-192.png">
-<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" href="../icons/icon-192.png?v=2">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png?v=2">
 <link rel="stylesheet" href="../style.css">
 <meta name="theme-color" content="#090909">
 <title>Recordar</title>
@@ -15,6 +15,7 @@
     <div class="logo-espaco"></div>
     <nav>
       <a href="#inicio" data-nav="inicio"><i data-icone="home"></i> Início</a>
+      <a href="#consultas" data-nav="consultas"><i data-icone="calendario"></i> Consultas</a>
       <a href="#pacientes" data-nav="pacientes"><i data-icone="users"></i> Pacientes</a>
       <a href="#perfil" data-nav="perfil"><i data-icone="user"></i> Perfil</a>
     </nav>
@@ -28,6 +29,7 @@
     </header>
     <div class="conteudo">
       <section class="view" id="view-inicio" hidden>
+        <div class="cartao" id="avisos" style="margin-bottom:1.5rem" hidden></div>
         <form class="cartao" id="form-consulta" style="margin-bottom:1.5rem">
           <h2>Criar consulta</h2>
           <p class="dica" id="sem-clinica" hidden>Marque suas clínicas no Perfil para criar consultas.</p>
@@ -38,13 +40,18 @@
             <label class="campo"><span>Dia da consulta</span>
               <input name="data_consulta" type="date" required>
             </label>
-            <label class="campo"><span>Horário da consulta</span>
-              <input name="horario_consulta" type="time" required>
-            </label>
           </div>
+          <div id="campo-horarios"></div>
           <p class="erro-form" hidden></p>
           <button type="submit" class="btn"><i data-icone="mais"></i> Criar consulta</button>
         </form>
+      </section>
+
+      <section class="view" id="view-consultas" hidden>
+        <div class="barra abas">
+          <button data-aba="agendada" class="ativa">Agendadas</button>
+          <button data-aba="disponivel">Disponíveis</button>
+        </div>
         <div class="lista" id="lista-consultas"></div>
       </section>
 
@@ -58,7 +65,7 @@
       </section>
 
       <section class="view colunas" id="view-consulta" hidden>
-        <div class="cartao" id="anamnese"></div>
+        <div class="pilha" id="anamnese"></div>
         <div class="pilha">
           <form class="cartao" id="form-remedio">
             <h2 id="titulo-remedio">Adicionar remédio</h2>
@@ -73,6 +80,15 @@
                 <input name="quantidade_remedio" type="text" placeholder="Ex.: 1 comprimido" required>
               </label>
             </div>
+            <div class="grade-2">
+              <label class="campo"><span>Data inicial do remédio</span>
+                <input name="data_inicio" type="date" required>
+              </label>
+              <label class="campo"><span>Data final do remédio</span>
+                <input name="data_fim" type="date" required>
+              </label>
+            </div>
+            <p class="dica">O remédio aparece na Agenda do dia do paciente só entre essas duas datas.</p>
             <p class="erro-form" hidden></p>
             <div class="item"><div class="acoes">
               <button type="submit" class="btn" id="botao-remedio">Adicionar</button>
@@ -81,6 +97,11 @@
           </form>
           <div class="pilha" id="lista-remedios"></div>
         </div>
+      </section>
+
+      <section class="view" id="view-remedios" hidden>
+        <div class="cartao" id="remedios-paciente" style="margin-bottom:1.2rem"></div>
+        <div class="lista" id="lista-remedios-paciente"></div>
       </section>
 
       <section class="view" id="view-perfil" hidden></section>

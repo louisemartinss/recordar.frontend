@@ -1,4 +1,4 @@
-const API_URL = "/api";
+const API_URL = "http://localhost:3001/api";
 
 function lerPreferencia(chave) {
   try { return localStorage.getItem(chave) === "sim"; } catch { return false; }
@@ -34,6 +34,11 @@ const TEMA_DA_AREA = { paciente: "roxo", medico: "azul", administrador: "laranja
 function sair() {
   sessao.limpar();
   location.href = `${RAIZ}index.html`;
+}
+
+async function confirmarSaida() {
+  const sim = await confirmar("Sair da sua conta?", "Você precisará entrar novamente para acessar o Recordar.", "Sim", "Não");
+  if (sim) sair();
 }
 
 async function api(caminho, { method = "GET", body } = {}) {
@@ -123,14 +128,14 @@ function toast(mensagem, tipo = "ok") {
   relogioToast = setTimeout(() => { el.hidden = true; }, 4500);
 }
 
-function confirmar(titulo, mensagem, textoSim = "Sim, continuar") {
+function confirmar(titulo, mensagem, textoSim = "Sim, continuar", textoNao = "Não, voltar") {
   return new Promise((resolver) => {
     const d = document.createElement("dialog");
     d.innerHTML = `
       <h2>${esc(titulo)}</h2>
       <p>${esc(mensagem)}</p>
       <div class="acoes">
-        <button class="btn suave" value="nao">Não, voltar</button>
+        <button class="btn suave" value="nao">${esc(textoNao)}</button>
         <button class="btn perigo" value="sim">${esc(textoSim)}</button>
       </div>`;
     document.body.appendChild(d);
@@ -188,6 +193,65 @@ function caixasHTML(nome, legenda, itens, marcados = [], vazio = "Nenhuma opçã
       <label><input type="checkbox" name="${esc(nome)}" value="${esc(i.id)}" ${ids.includes(String(i.id)) ? "checked" : ""}> ${esc(i.nome)}</label>`).join("")}</div>`
       : `<p class="dica">${esc(vazio)}</p>`}
   </fieldset>`;
+}
+
+function seletorInterno(nome, itens, marcados) {
+  if (!itens.length) return `<p class="dica">Nenhuma clínica cadastrada.</p>`;
+  const ids = marcados.map(String);
+  const escolhidos = ids.map((id) => itens.find((i) => String(i.id) === id)).filter(Boolean);
+  const restantes = itens.filter((i) => !ids.includes(String(i.id)));
+  const etiquetas = escolhidos.length
+    ? escolhidos.map((i) => `
+      <span class="escolhida">${esc(i.nome)}
+        <input type="hidden" name="${esc(nome)}" value="${esc(i.id)}">
+        <button type="button" data-remover="${esc(i.id)}" aria-label="Tirar ${esc(i.nome)}">${icone("x")}</button>
+      </span>`).join("")
+    : `<p class="dica">Nenhuma clínica escolhida.</p>`;
+  const lista = restantes.length
+    ? `<div class="campo"><select data-adicionar aria-label="Adicionar clínica">
+        <option value="">+ Adicionar clínica</option>
+        ${restantes.map((i) => `<option value="${esc(i.id)}">${esc(i.nome)}</option>`).join("")}
+      </select></div>`
+    : "";
+  return `<div class="etiquetas escolhidas">${etiquetas}</div>${lista}`;
+}
+
+function seletorHTML(nome, legenda, itens, marcados = []) {
+  return `<fieldset class="opcoes seletor" data-multiplo="${esc(nome)}" data-nome="${esc(nome)}" data-itens="${esc(JSON.stringify(itens))}">
+    <legend>${esc(legenda)}</legend>
+    <div class="seletor-corpo">${seletorInterno(nome, itens, marcados)}</div>
+  </fieldset>`;
+}
+
+function redesenharSeletor(grupo, marcados) {
+  grupo.querySelector(".seletor-corpo").innerHTML = seletorInterno(grupo.dataset.nome, JSON.parse(grupo.dataset.itens), marcados);
+}
+const marcadosDoSeletor = (grupo) => [...grupo.querySelectorAll('input[type="hidden"]')].map((campo) => campo.value);
+
+document.addEventListener("change", (e) => {
+  const lista = e.target.closest && e.target.closest("[data-adicionar]");
+  if (!lista || !lista.value) return;
+  const grupo = lista.closest(".seletor");
+  redesenharSeletor(grupo, [...marcadosDoSeletor(grupo), lista.value]);
+  const proxima = grupo.querySelector("[data-adicionar]");
+  if (proxima) proxima.focus();
+});
+document.addEventListener("click", (e) => {
+  const botao = e.target.closest && e.target.closest("[data-remover]");
+  if (!botao) return;
+  const grupo = botao.closest(".seletor");
+  redesenharSeletor(grupo, marcadosDoSeletor(grupo).filter((id) => id !== botao.dataset.remover));
+});
+
+function periodoRemedio(r) {
+  if (!r.data_inicio && !r.data_fim) return "Sem data definida";
+  return `${dataBR(r.data_inicio)} a ${dataBR(r.data_fim)}`;
+}
+
+function seloSituacao(r) {
+  if (r.situacao === "futuro") return `<span class="selo">Começa em ${dataBR(r.data_inicio)}</span>`;
+  if (r.situacao === "encerrado") return `<span class="selo encerrado">Terminou em ${dataBR(r.data_fim)}</span>`;
+  return `<span class="selo livre">Em uso</span>`;
 }
 
 const comoOpcaoClinica = (c) => ({ id: c.id, nome: c.nome_clinica });
@@ -278,6 +342,7 @@ function montarPerfil(el, campos, { comAcessibilidade = true } = {}) {
           <select name="${c.chave}" required>${opcoesHTML(listas[c.chave], user[c.chave])}</select></label>`;
       }
       if (c.tipo === "caixas") return caixasHTML(c.chave, c.rotulo, listas[c.chave], c.marcados(user));
+      if (c.tipo === "seletor") return seletorHTML(c.chave, c.rotulo, listas[c.chave], c.marcados(user));
       return `<label class="campo"><span>${esc(c.rotulo)}</span>
         <input name="${c.chave}" type="${c.tipo || "text"}" value="${esc(user[c.chave])}" ${c.opcional ? "" : "required"}></label>`;
     };
@@ -294,7 +359,7 @@ function montarPerfil(el, campos, { comAcessibilidade = true } = {}) {
       : `<dl class="dados">
           ${campos.map((c) => `<div><dt>${esc(c.rotulo)}</dt><dd>${esc(mostra(c))}</dd></div>`).join("")}
         </dl>
-        <button class="btn suave" data-perfil="editar">${icone("editar")} Editar meus dados</button>`;
+        <button class="btn suave" data-perfil="editar">${icone("editar")} Editar</button>`;
 
     el.innerHTML = `
       <div class="colunas">
@@ -305,7 +370,7 @@ function montarPerfil(el, campos, { comAcessibilidade = true } = {}) {
             <label class="chave">Texto maior <input type="checkbox" data-pref="recordar_texto_maior" ${lerPreferencia("recordar_texto_maior") ? "checked" : ""}></label>
             <label class="chave">Modo claro <input type="checkbox" data-pref="recordar_modo_claro" ${lerPreferencia("recordar_modo_claro") ? "checked" : ""}></label>
           </div>` : ""}
-          <button class="btn perigo largo" data-perfil="sair">${icone("sair")} Sair da conta</button>
+          <button class="btn perigo largo" data-perfil="sair">${icone("sair")} Sair</button>
           <button class="btn aviso largo" data-perfil="deletar">${icone("lixeira")} Deletar conta</button>
         </div>
       </div>`;
@@ -326,7 +391,7 @@ function montarPerfil(el, campos, { comAcessibilidade = true } = {}) {
     if (!acao) return;
     if (acao === "editar") { editando = true; desenhar().catch((falha) => toast(falha.message, "erro")); }
     if (acao === "cancelar") { editando = false; desenhar().catch((falha) => toast(falha.message, "erro")); }
-    if (acao === "sair") sair();
+    if (acao === "sair") confirmarSaida();
     if (acao === "deletar") {
       const sim = await confirmar(
         "Deletar sua conta?",
@@ -350,6 +415,26 @@ function montarPerfil(el, campos, { comAcessibilidade = true } = {}) {
 
   return () => { editando = false; return desenhar(); };
 }
+
+function mascaraTelefone(valor) {
+  const d = String(valor ?? "").replace(/\D/g, "").slice(0, 11);
+  if (!d) return "";
+  if (d.length <= 2) return `(${d}`;
+  if (d.length <= 6) return `(${d.slice(0, 2)}) ${d.slice(2)}`;
+  if (d.length <= 10) return `(${d.slice(0, 2)}) ${d.slice(2, 6)}-${d.slice(6)}`;
+  return `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}`;
+}
+
+document.addEventListener("input", (e) => {
+  const campo = e.target;
+  if (!campo.matches || !campo.matches('input[type="tel"]')) return;
+  if (e.inputType && e.inputType.startsWith("delete")) return;
+  campo.value = mascaraTelefone(campo.value);
+});
+document.addEventListener("focusout", (e) => {
+  const campo = e.target;
+  if (campo.matches && campo.matches('input[type="tel"]')) campo.value = mascaraTelefone(campo.value);
+});
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => navigator.serviceWorker.register(`${RAIZ}service-worker.js`).catch(() => {}));

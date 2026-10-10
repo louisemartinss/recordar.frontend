@@ -46,7 +46,7 @@ function sairDaEdicaoEspecialidade() {
 const telas = {
   inicio: {
     titulo: "Administração",
-    instrucoes: "Aperte Usuários para ver pacientes e médicos. Em Clínicas e Especialidades você faz os cadastros que os médicos usam. Em Consultas estão todas as consultas do sistema.",
+    instrucoes: "Aperte Usuários para ver os pacientes e para cadastrar os médicos. Antes de cadastrar um médico, cadastre as Clínicas e as Especialidades. Em Consultas estão todas as consultas do sistema.",
     async carregar() {
       const [usuarios, clinicas, especialidades, consultas] = await Promise.all([
         api("/users"), api("/clinicas"), api("/especialidades"), api("/consultas")
@@ -60,16 +60,32 @@ const telas = {
 
   usuarios: {
     titulo: "Usuários",
-    instrucoes: "Escolha Pacientes ou Médicos. Aperte Editar para mudar o cadastro ou as clínicas do médico. Para apagar uma conta, aperte Deletar.",
+    instrucoes: "Escolha Pacientes, Médicos ou Administradores. Na aba Médicos, aperte Cadastrar médico para criar a conta de um médico, com a especialidade e as clínicas onde ele atende. Na aba Administradores, aperte Cadastrar administrador para dar acesso à administração a outra pessoa. Aperte Editar para mudar um cadastro. Para apagar uma conta, aperte Deletar.",
     voltar: "inicio",
     async carregar() {
       document.querySelectorAll("[data-aba]").forEach((b) => b.classList.toggle("ativa", b.dataset.aba === abaUsuarios));
+      $("#area-cadastrar-medico").hidden = abaUsuarios !== "medico";
+      $("#area-cadastrar-administrador").hidden = abaUsuarios !== "administrador";
       const busca = encodeURIComponent($("#busca-usuario").value.trim());
       const usuarios = await api(`/users?tipo=${abaUsuarios}&busca=${busca}`);
       usuariosNaTela = usuarios;
 
       preencherLista($("#lista-usuarios"), usuarios, "Nenhum usuário encontrado.", (u) => {
-        const nome = u.nome_paciente || u.nome_medico;
+        const nome = u.nome_paciente || u.nome_medico || u.nome_administrador;
+        if (u.tipo === "administrador") {
+          const souEu = u.id === sessao.user.id;
+          return `
+          <article class="cartao item">
+            ${souEu ? `<span class="selo">Você</span>` : ""}
+            <h3>${esc(nome)}</h3>
+            <p>${icone("telefone")} Telefone: <b>${esc(u.telefone) || "Não informado"}</b></p>
+            <p>${icone("email")} E-mail: <b>${esc(u.email)}</b></p>
+            <p>Senha: <b>•••••••• (criptografada)</b></p>
+            ${souEu ? "" : `<div class="acoes">
+              <button class="btn perigo pequeno" data-deletar="${u.id}" data-nome="${esc(nome)}" data-tipo="${u.tipo}">${icone("lixeira")} Deletar</button>
+            </div>`}
+          </article>`;
+        }
         const detalhes = u.tipo === "paciente"
           ? `<p>${icone("calendario")} Data de nascimento: <b>${dataBR(u.data_nascimento)}</b></p>`
           : `<p>CRM: <b>${esc(u.crm)}</b></p>
@@ -113,7 +129,7 @@ const telas = {
 
   especialidades: {
     titulo: "Especialidades",
-    instrucoes: "Digite o nome da especialidade e aperte Cadastrar. Os médicos escolhem uma delas ao criar a conta.",
+    instrucoes: "Digite o nome da especialidade e aperte Cadastrar. Você escolhe uma delas ao cadastrar um médico.",
     voltar: "inicio",
     async carregar() {
       especialidadesNaTela = await api("/especialidades");
@@ -151,7 +167,7 @@ const telas = {
   }
 };
 
-$("#sair").addEventListener("click", sair);
+$("#sair").addEventListener("click", confirmarSaida);
 
 document.querySelectorAll("[data-aba]").forEach((botao) => {
   botao.addEventListener("click", () => {
@@ -168,6 +184,51 @@ for (const campo of ["#busca-usuario", "#busca-clinica"]) {
   });
 }
 
+async function cadastrarMedico() {
+  const [especialidades, clinicas] = await Promise.all([api("/especialidades"), api("/clinicas")]);
+  if (!especialidades.length) throw new Error("Cadastre uma especialidade antes de cadastrar um médico.");
+  const campos = `
+    <label class="campo"><span>Nome completo</span><input name="nome_medico" required></label>
+    <div class="grade-2">
+      <label class="campo"><span>CRM</span><input name="crm" required></label>
+      <label class="campo"><span>Telefone</span><input name="telefone" type="tel" placeholder="(81) 98888-7777"></label>
+    </div>
+    <label class="campo"><span>Especialidade</span>
+      <select name="id_especialidade" required>${opcoesHTML(especialidades.map(comoOpcaoEspecialidade))}</select></label>
+    ${seletorHTML("clinicas", "Clínicas onde atende", clinicas.map(comoOpcaoClinica), [])}
+    <label class="campo"><span>E-mail</span><input name="email" type="email" autocomplete="off" required></label>
+    <div class="grade-2">
+      <label class="campo"><span>Senha (6 ou mais letras ou números)</span><input name="senha" type="password" autocomplete="new-password" minlength="6" required></label>
+      <label class="campo"><span>Confirmar senha</span><input name="confirmar_senha" type="password" autocomplete="new-password" minlength="6" required></label>
+    </div>`;
+  abrirFormulario("Cadastrar médico", campos, async (valores) => {
+    if (valores.senha !== valores.confirmar_senha) throw new Error("As senhas não são iguais.");
+    await api("/users", { method: "POST", body: valores });
+    toast("Médico cadastrado!");
+    recarregarTela();
+  });
+}
+$("#cadastrar-medico").addEventListener("click", () => cadastrarMedico().catch((falha) => toast(falha.message, "erro")));
+
+$("#cadastrar-administrador").addEventListener("click", () => {
+  const campos = `
+    <label class="campo"><span>Nome completo</span><input name="nome_administrador" required></label>
+    <div class="grade-2">
+      <label class="campo"><span>E-mail</span><input name="email" type="email" autocomplete="off" required></label>
+      <label class="campo"><span>Telefone</span><input name="telefone" type="tel" placeholder="(81) 98888-7777"></label>
+    </div>
+    <div class="grade-2">
+      <label class="campo"><span>Senha (6 ou mais letras ou números)</span><input name="senha" type="password" autocomplete="new-password" minlength="6" required></label>
+      <label class="campo"><span>Confirmar senha</span><input name="confirmar_senha" type="password" autocomplete="new-password" minlength="6" required></label>
+    </div>`;
+  abrirFormulario("Cadastrar administrador", campos, async (valores) => {
+    if (valores.senha !== valores.confirmar_senha) throw new Error("As senhas não são iguais.");
+    await api("/users", { method: "POST", body: { ...valores, tipo: "administrador" } });
+    toast("Administrador cadastrado!");
+    recarregarTela();
+  });
+});
+
 async function editarUsuario(u) {
   let campos;
   if (u.tipo === "medico") {
@@ -180,7 +241,7 @@ async function editarUsuario(u) {
       </div>
       <label class="campo"><span>Especialidade</span>
         <select name="id_especialidade" required>${opcoesHTML(especialidades.map(comoOpcaoEspecialidade), u.id_especialidade)}</select></label>
-      ${caixasHTML("clinicas", "Clínicas onde atende", clinicas.map(comoOpcaoClinica), u.clinicas.map((c) => c.id), "Nenhuma clínica cadastrada.")}`;
+      ${seletorHTML("clinicas", "Clínicas onde atende", clinicas.map(comoOpcaoClinica), u.clinicas.map((c) => c.id))}`;
   } else {
     campos = `
       <label class="campo"><span>Nome completo</span><input name="nome_paciente" value="${esc(u.nome_paciente)}" required></label>
@@ -205,9 +266,12 @@ $("#lista-usuarios").addEventListener("click", async (e) => {
   }
   const botao = e.target.closest("[data-deletar]");
   if (!botao) return;
-  const aviso = botao.dataset.tipo === "medico"
-    ? "As consultas deste médico e os remédios que ele receitou também serão apagados."
-    : "Os remédios deste paciente serão apagados e as consultas que ele marcou voltam a ficar disponíveis.";
+  const avisos = {
+    medico: "As consultas deste médico e os remédios que ele receitou também serão apagados.",
+    paciente: "Os remédios deste paciente serão apagados e as consultas que ele marcou voltam a ficar disponíveis.",
+    administrador: "Esta pessoa não poderá mais entrar na administração."
+  };
+  const aviso = avisos[botao.dataset.tipo];
   if (!(await confirmar(`Deletar ${botao.dataset.nome}?`, aviso, "Sim, deletar"))) return;
   try {
     await api(`/users/${botao.dataset.deletar}`, { method: "DELETE" });

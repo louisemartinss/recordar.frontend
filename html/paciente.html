@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="manifest" href="../manifest.json">
-<link rel="icon" href="../icons/icon-192.png">
-<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" href="../icons/icon-192.png?v=2">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png?v=2">
 <link rel="stylesheet" href="../style.css">
 <meta name="theme-color" content="#050505">
 <title>Recordar</title>
@@ -35,13 +35,40 @@
         </div>
         <div class="cartao agenda">
           <h2>Agenda do dia</h2>
+          <p class="agenda-dia" id="agenda-dia"></p>
           <div class="agenda-lista" id="agenda"></div>
+          <div class="agenda-teste">
+            <button type="button" class="agenda-link" id="testar-dia"><i data-icone="calendario"></i> Ver outro dia</button>
+            <div class="agenda-escolha" id="area-teste" hidden>
+              <label class="campo"><span>Selecione outro dia</span>
+                <input type="date" id="dia-teste">
+              </label>
+              <button type="button" class="btn pequeno" id="voltar-hoje"><i data-icone="voltar"></i> Voltar para hoje</button>
+            </div>
+          </div>
         </div>
+      </section>
+
+      <section class="view" id="view-saude" hidden>
+        <form class="cartao" id="form-saude">
+          <h2>Antes de começar, conte um pouco sobre a sua saúde</h2>
+          <label class="campo"><span>Possui doenças ou condições de saúde?</span>
+            <textarea name="condicoes_saude"></textarea>
+          </label>
+          <label class="campo"><span>Possui alguma alergia?</span>
+            <textarea name="alergias"></textarea>
+          </label>
+          <label class="campo"><span>Já utiliza algum medicamento?</span>
+            <textarea name="medicamentos_em_uso"></textarea>
+          </label>
+          <p class="erro-form" hidden></p>
+          <button type="submit" class="btn largo"><i data-icone="ok"></i> Concluir</button>
+        </form>
       </section>
 
       <section class="view" id="view-marcar" hidden>
         <form class="cartao" id="filtro-medicos" style="margin-bottom:1.5rem">
-          <h2>Encontre um profissional</h2>
+          <h2>Encontre uma consulta</h2>
           <div class="barra" style="margin-bottom:0">
             <label class="campo"><span>Clínica</span>
               <select name="clinica" id="filtro-clinica"></select>
@@ -59,30 +86,26 @@
 
       <section class="view" id="view-horarios" hidden>
         <div class="cartao" id="medico-escolhido" style="margin-bottom:1.2rem"></div>
-        <div class="lista" id="lista-disponiveis"></div>
+        <div class="pilha" id="lista-disponiveis"></div>
+      </section>
+
+      <section class="view" id="view-trocar" hidden>
+        <div class="cartao" id="consulta-atual" style="margin-bottom:1.2rem"></div>
+        <div class="pilha" id="lista-trocar"></div>
       </section>
 
       <section class="view" id="view-anamnese" hidden>
         <div class="cartao" id="consulta-escolhida" style="margin-bottom:1.2rem"></div>
         <form class="cartao" id="form-anamnese">
+          <label class="campo"><span>Qual é a sua principal queixa?</span>
+            <textarea name="queixa_principal" required></textarea>
+          </label>
           <div class="grade-2">
-            <label class="campo"><span>Qual é a sua principal queixa?</span>
-              <textarea name="queixa_principal" required></textarea>
-            </label>
             <label class="campo"><span>Quais sintomas você está sentindo?</span>
               <textarea name="sintomas"></textarea>
             </label>
             <label class="campo"><span>Quando os sintomas começaram?</span>
               <input name="inicio_sintomas" type="date">
-            </label>
-            <label class="campo"><span>Possui doenças ou condições de saúde?</span>
-              <textarea name="condicoes_saude"></textarea>
-            </label>
-            <label class="campo"><span>Possui alguma alergia?</span>
-              <textarea name="alergias"></textarea>
-            </label>
-            <label class="campo"><span>Já utiliza algum medicamento?</span>
-              <textarea name="medicamentos_em_uso"></textarea>
             </label>
           </div>
           <p class="erro-form" hidden></p>
