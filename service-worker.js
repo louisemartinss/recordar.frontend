@@ -1,4 +1,4 @@
-const CACHE_NAME = "recordar-v24";
+const CACHE_NAME = "recordar-v26";
 const ARQUIVOS = [
   "./",
   "index.html",
